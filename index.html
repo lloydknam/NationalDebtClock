@@ -37,8 +37,6 @@
     const detailsEl = document.getElementById("details");
     const currentTimeEl = document.getElementById("currentTime");
 
-    detailsEl.innerText = `초당 증가량: ${formatKRW(Math.round(increasePerSecond))} / sec`;
-
     // 금액 조,억,만 단위 + 천 단위 ',' 포함
     function formatKRW(num) {
       num = Math.round(num);
@@ -83,3 +81,4 @@
   </script>
 </body>
 </html>
+
