@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>National Debt Clock-S.Korea </title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      background: #f4f6f9;
+    }
+    h1 { font-size: 2.4rem; margin-bottom: 12px; } /* 20% 확대 */
+    #currentTime { font-size: 1.44rem; color: #333; margin-bottom: 24px; } /* 20% 확대 */
+    #debt { font-size: 3rem; color: #d32f2f; font-weight: bold; } /* 20% 확대 */
+    .info { margin-top: 12px; font-size: 1.08rem; color: #555; white-space: pre-line; } /* 20% 확대 */
+  </style>
+</head>
+<body>
+  <h1>국가채무 시계</h1>
+  <div id="currentTime">--:--:--</div>
+  <div id="debt">0 원</div>
+  <div class="info" id="details"></div>
+
+  <script>
+    // ---------------- 설정 ----------------
+    const startDate = new Date("2025-01-01T00:00:00");
+    const endDate   = new Date("2025-12-31T24:00:00");
+    const startDebt = 1273300000000000; // 1,273조 3,000억 원
+    const endDebt   = 1415200000000000; // 1,415조 2,000억 원
+    // ----------------------------------------
+
+    const totalSeconds = (endDate - startDate) / 1000;
+    const increasePerSecond = (endDebt - startDebt) / totalSeconds;
+
+    const debtEl = document.getElementById("debt");
+    const detailsEl = document.getElementById("details");
+    const currentTimeEl = document.getElementById("currentTime");
+
+    // 금액 조,억,만 단위 + 천 단위 ',' 포함
+    function formatKRW(num) {
+      num = Math.round(num);
+      const cho = Math.floor(num / 1e12);
+      num %= 1e12;
+      const eok = Math.floor(num / 1e8);
+      num %= 1e8;
+      const man = Math.floor(num / 1e4);
+      let result = '';
+      if (cho > 0) result += cho.toLocaleString() + '조 ';
+      if (eok > 0) result += eok.toLocaleString() + '억 ';
+      if (man > 0) result += man.toLocaleString() + '만 ';
+      if (result === '') result = '0 ';
+      return result + '원';
+    }
+
+    function formatTime(date) {
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth()+1).padStart(2,'0');
+      const dd = String(date.getDate()).padStart(2,'0');
+      const hh = String(date.getHours()).padStart(2,'0');
+      const min = String(date.getMinutes()).padStart(2,'0');
+      const sec = String(date.getSeconds()).padStart(2,'0');
+      return `${yyyy}-${mm}-${dd} ${hh}:${min}:${sec}`; // 1초 단위까지만 표시
+    }
+
+    function update() {
+      const now = new Date();
+      currentTimeEl.innerText = `현재 시각: ${formatTime(now)}`;
+
+      let elapsedSec = (now - startDate) / 1000; 
+      if (elapsedSec < 0) elapsedSec = 0;
+      if (elapsedSec > totalSeconds) elapsedSec = totalSeconds;
+
+      const currentDebt = startDebt + elapsedSec * increasePerSecond;
+      debtEl.innerText = formatKRW(currentDebt);
+    }
+
+    // 0.1초마다 갱신
+    setInterval(update, 100);
+    update();
+  </script>
+</body>
+</html>
