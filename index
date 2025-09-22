@@ -12,7 +12,7 @@
     }
     h1 { font-size: 2.4rem; margin-bottom: 12px; } /* 20% 확대 */
     #currentTime { font-size: 1.44rem; color: #333; margin-bottom: 24px; } /* 20% 확대 */
-    #debt { font-size: 3rem; color: #d32f2f; font-weight: bold; } /* 20% 확대 */
+    #debt { font-size: 5rem; color: #d32f2f; font-weight: bold; } /* 숫자 더 크게 */
     .info { margin-top: 12px; font-size: 1.08rem; color: #555; white-space: pre-line; } /* 20% 확대 */
   </style>
 </head>
@@ -34,23 +34,11 @@
     const increasePerSecond = (endDebt - startDebt) / totalSeconds;
 
     const debtEl = document.getElementById("debt");
-    const detailsEl = document.getElementById("details");
     const currentTimeEl = document.getElementById("currentTime");
 
-    // 금액 조,억,만 단위 + 천 단위 ',' 포함
+    // 천 단위 콤마 + 원 단위까지 표시
     function formatKRW(num) {
-      num = Math.round(num);
-      const cho = Math.floor(num / 1e12);
-      num %= 1e12;
-      const eok = Math.floor(num / 1e8);
-      num %= 1e8;
-      const man = Math.floor(num / 1e4);
-      let result = '';
-      if (cho > 0) result += cho.toLocaleString() + '조 ';
-      if (eok > 0) result += eok.toLocaleString() + '억 ';
-      if (man > 0) result += man.toLocaleString() + '만 ';
-      if (result === '') result = '0 ';
-      return result + '원';
+      return Math.round(num).toLocaleString("ko-KR") + " 원";
     }
 
     function formatTime(date) {
